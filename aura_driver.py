@@ -67,9 +67,9 @@ isCalibrated = False
 #private states
 inBed = False
 isAsleep = False
-timeIntoBed = 0
-timeInSleep = 0
-waketime = 0
+timeIntoBed = None
+timeInSleep = None
+waketime = None
 
 def run():
 	global waketime
@@ -78,6 +78,7 @@ def run():
 	checkInBed()
 	inBedNotSleeping()
 	alarmControl()
+	resetStates()
 
 #make sure that the person is in the bed
 def checkInBed():
@@ -109,7 +110,16 @@ def alarmControl():
 			#while not stateOutBed:
 			#	stateOutBed = vc.run()
 			vc.calibrate()
+			vc.close_video_stream()
 			break
+
+def resetStates():
+	global inBed, isAsleep, timeIntoBed, timeInSleep, waketime
+	inBed = False
+	isAsleep = False
+	timeIntoBed = None
+	timeInSleep = None
+	waketime = None
 
 #returns minutes past 12:00 AM
 def convertTime(hour,minute,ampm):
@@ -140,7 +150,7 @@ def acSet(dom):
 
 callbacks = {
 	"": acConnect,
-	"Set": acSet,
+	"Set": acSet
 }
 
 #finds port that arduino is connected to
@@ -148,5 +158,5 @@ port = arduino.findPort()
 '''
 if(not arduino.testArduinoConnection()): 
 	exit()
-	'''
+'''
 Atlas.launch(callbacks, None, head)
